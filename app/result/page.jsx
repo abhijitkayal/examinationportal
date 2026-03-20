@@ -100,7 +100,7 @@ return(
 
 <div className="flex items-center justify-center h-screen bg-gray-100">
 
-<div className="bg-white p-10 rounded shadow w-[400px] text-center">
+<div className="bg-white p-6 md:p-10 rounded shadow w-[92%] max-w-100 text-center">
 
 <h2 className="text-3xl font-bold text-green-600 mb-6">
 Exam Result

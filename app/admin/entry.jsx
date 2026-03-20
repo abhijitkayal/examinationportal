@@ -61,9 +61,9 @@ fetchUsers()
 
 return (
 
-<div className="p-6">
+<div className="p-4 md:p-6 overflow-x-hidden">
 
-<div className="bg-white p-6 rounded shadow">
+<div className="bg-white p-4 md:p-6 rounded shadow max-w-full">
 
 <h2 className="text-xl font-semibold mb-6">
 Entry Section
@@ -83,59 +83,52 @@ className="bg-green-600 text-white px-4 py-2 rounded mb-6 disabled:opacity-60"
 
 ) : (
 
-<div className="overflow-x-auto">
+<div className="w-full overflow-x-auto">
+  <div className="min-w-[900px]">
 
-<table className="w-full border border-gray-300">
+    <table className="w-full border border-gray-300 whitespace-nowrap">
 
-<thead className="bg-gray-100">
+      <thead className="bg-gray-100">
+        <tr>
+          <th className="border p-2">Name</th>
+          <th className="border p-2">Email</th>
+          <th className="border p-2">Phone</th>
+          <th className="border p-2">Role</th>
+          <th className="border p-2">Code</th>
+          <th className="border p-2">Address</th>
+          <th className="border p-2">Aadhaar</th>
+          <th className="border p-2">Reg Date</th>
+        </tr>
+      </thead>
 
-<tr>
-<th className="border p-2">Name</th>
-<th className="border p-2">Email</th>
-<th className="border p-2">Phone</th>
-<th className="border p-2">Role</th>
-<th className="border p-2">Code</th>
-<th className="border p-2">Address</th>
-<th className="border p-2">Aadhaar</th>
-<th className="border p-2">Reg Date</th>
-</tr>
+      <tbody>
+        {users.length === 0 ? (
+          <tr>
+            <td colSpan="8" className="text-center p-4">
+              No users found
+            </td>
+          </tr>
+        ) : (
+          users.map((user) => (
+            <tr key={user._id} className="text-center">
+              <td className="border p-2">{user.name}</td>
+              <td className="border p-2">{user.email}</td>
+              <td className="border p-2">{user.phone}</td>
+              <td className="border p-2">{user.role}</td>
+              <td className="border p-2">{user.uniqueCode || "Self"}</td>
+              <td className="border p-2">{user.address || "-"}</td>
+              <td className="border p-2">{user.aadhaar || "-"}</td>
+              <td className="border p-2">
+                {new Date(user.createdAt).toLocaleDateString()}
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
 
-</thead>
+    </table>
 
-<tbody>
-
-{users.length === 0 ? (
-
-<tr>
-<td colSpan="7" className="text-center p-4">
-No users found
-</td>
-</tr>
-
-) : (
-
-users.map((user)=>(
-<tr key={user._id} className="text-center">
-
-<td className="border p-2">{user.name}</td>
-<td className="border p-2">{user.email}</td>
-<td className="border p-2">{user.phone}</td>
-<td className="border p-2">{user.role}</td>
-<td className="border p-2">{user.uniqueCode || "Self"}</td>
-<td className="border p-2">{user.address || "-"}</td>
-<td className="border p-2">{user.aadhaar || "-"}</td>
-<td className="border p-2">{new Date(user.createdAt).toLocaleDateString()}</td>
-
-
-</tr>
-))
-
-)}
-
-</tbody>
-
-</table>
-
+  </div>
 </div>
 
 )}

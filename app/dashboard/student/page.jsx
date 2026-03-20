@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useCallback, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 function DashboardContent(){
@@ -22,7 +22,6 @@ const [time,setTime] = useState(0)
 const [showResult,setShowResult] = useState(false)
 const [startExam,setStartExam] = useState(false)
 const [resultPublished,setResultPublished] = useState(false)
-const [topScorerEmail,setTopScorerEmail] = useState("")
 const [hasSubmittedExam,setHasSubmittedExam] = useState(false)
 
 useEffect(()=>{
@@ -84,40 +83,7 @@ setTime(data[0].time *60)
 
 
 // NEXT QUESTION
-function nextQuestion(){
-
-if(!questions[current]) return
-
-const updatedAnswers = [
-
-...answers,
-{
-question: questions[current].question,
-answer: answer
-}
-
-]
-
-setAnswers(updatedAnswers)
-
-if(current < questions.length - 1){
-
-const next = current + 1
-
-setCurrent(next)
-setAnswer("")
-setTime(questions[next].time * 60)
-
-}else{
-
-setShowResult(true)
-calculateResult(updatedAnswers)
-
-}
-
-}
-
-async function calculateResult(submittedAnswers){
+const calculateResult = useCallback(async (submittedAnswers)=>{
 
 let score = 0
 let totalMarks = 0
@@ -170,7 +136,41 @@ return
 setHasSubmittedExam(true)
 setShowResult(true)
 
+},[questions,user,router])
+
+
+const nextQuestion = useCallback(()=>{
+
+if(!questions[current]) return
+
+const updatedAnswers = [
+
+...answers,
+{
+question: questions[current].question,
+answer: answer
 }
+
+]
+
+setAnswers(updatedAnswers)
+
+if(current < questions.length - 1){
+
+const next = current + 1
+
+setCurrent(next)
+setAnswer("")
+setTime(questions[next].time * 60)
+
+}else{
+
+setShowResult(true)
+calculateResult(updatedAnswers)
+
+}
+
+},[questions,current,answers,answer,calculateResult])
 
 
 useEffect(()=>{
@@ -206,20 +206,7 @@ setTime(prev => prev - 1)
 
 return ()=> clearInterval(timer)
 
-},[time])
-
-
-useEffect(()=>{
-
-fetch("/api/result?top=1")
-.then(res=>res.json())
-.then(data=>{
-if(data?.email){
-setTopScorerEmail(data.email)
-}
-})
-
-},[])
+},[time,nextQuestion,questions.length,showResult])
 
 
 useEffect(()=>{
@@ -336,13 +323,13 @@ Logout
 
 
 {/* QUESTION SECTION */}
-<div className="grid grid-cols-2 gap-6 p-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-6">
 
-<div className="flex items-center justify-center h-[85vh]">
+<div className="flex items-center justify-center min-h-[60vh] md:h-[85vh]">
 
 {!startExam ? (
 
-<div className="bg-white p-10 rounded shadow w-[400px] text-center">
+<div className="bg-white p-6 md:p-10 rounded shadow w-full max-w-100 text-center">
 
 <h2 className="text-2xl font-bold mb-4">
 Online Examination
@@ -370,7 +357,7 @@ Start Exam
 
 ) : showResult ? (
 
-<div className="bg-white p-10 rounded shadow w-[700px]">
+<div className="bg-white p-6 md:p-10 rounded shadow w-full md:w-175">
 
 <h2 className="text-2xl font-bold mb-6">
 Your Answers
@@ -400,7 +387,7 @@ Redirecting to dashboard in 5 seconds...
 
 questions[current] && (
 
-<div className="bg-white p-10 rounded shadow w-[700px]">
+<div className="bg-white p-6 md:p-10 rounded shadow w-full md:w-175">
 
 <div className="flex justify-between mb-6">
 
@@ -445,14 +432,14 @@ className="bg-blue-600 text-white px-4 py-2 rounded"
 
 </div>
 
-<div className="flex items-center justify-center h-[85vh]">
-<div className="w-full max-w-[400px] space-y-4">
+<div className="flex items-center justify-center min-h-[60vh] md:h-[85vh]">
+<div className="w-full max-w-100 space-y-4">
 
 
 
 {resultPublished && (
 
-<div className="bg-white p-10 rounded shadow w-[400px] text-center">
+<div className="bg-white p-6 md:p-10 rounded shadow w-full max-w-100 text-center">
 
 <h2 className="text-2xl font-bold mb-4">
 Result Available

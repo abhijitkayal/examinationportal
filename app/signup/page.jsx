@@ -6,6 +6,8 @@ import { useState } from "react"
 export default function Signup() {
 const router = useRouter();
 const [role,setRole] = useState("student")
+const [showPassword,setShowPassword] = useState(false)
+const [showConfirmPassword,setShowConfirmPassword] = useState(false)
 
 const [form,setForm] = useState({
 name:"",
@@ -139,21 +141,41 @@ onChange={handleChange}
 
 )}
 
+<div className="relative">
 <input
-type="password"
+type={showPassword ? "text" : "password"}
 name="password"
 placeholder="Password"
-className="w-full border p-2 rounded"
+className="w-full border p-2 rounded pr-16"
 onChange={handleChange}
 />
 
+<button
+type="button"
+onClick={()=>setShowPassword(!showPassword)}
+className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600"
+>
+{showPassword ? "Hide" : "Show"}
+</button>
+</div>
+
+<div className="relative">
 <input
-type="password"
+type={showConfirmPassword ? "text" : "password"}
 name="confirm"
 placeholder="Confirm Password"
-className="w-full border p-2 rounded"
+className="w-full border p-2 rounded pr-16"
 onChange={handleChange}
 />
+
+<button
+type="button"
+onClick={()=>setShowConfirmPassword(!showConfirmPassword)}
+className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600"
+>
+{showConfirmPassword ? "Hide" : "Show"}
+</button>
+</div>
 
 <button
 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"

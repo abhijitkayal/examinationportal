@@ -522,17 +522,27 @@ export default function Dashboard(){
 
   const [user,setUser] = useState(null)
   const [open,setOpen] = useState(false)
+  const [mobileMenuOpen,setMobileMenuOpen] = useState(false)
   const [activeTab,setActiveTab] = useState("dashboard")
 
   const [hasSubmittedExam,setHasSubmittedExam] = useState(false)
   const [resultPublished,setResultPublished] = useState(false)
 
   const [links,setLinks] = useState([])
-  const [notifications,setNotifications] = useState([])
   const [topScorerEmail,setTopScorerEmail] = useState("")
 
   const [chatOpen,setChatOpen] = useState(false)
   const [showTopModal, setShowTopModal] = useState(false)
+
+  // ---------------- FETCH LINKS ----------------
+  const fetchLinksAndNotifications = async (userId) => {
+    if(!userId) return
+
+    const res = await fetch(`/api/link?userId=${userId}`)
+    const data = await res.json()
+
+    setLinks(data)
+  }
 
   // ---------------- FETCH USER ----------------
   useEffect(()=>{
@@ -551,17 +561,6 @@ export default function Dashboard(){
       })
 
   },[router])
-
-  // ---------------- FETCH LINKS ----------------
-  async function fetchLinksAndNotifications(userId){
-    if(!userId) return
-
-    const res = await fetch(`/api/link?userId=${userId}`)
-    const data = await res.json()
-
-    setLinks(data)
-    setNotifications(data.filter((l)=>l.isNew))
-  }
 
   // ---------------- CHECK RESULT ----------------
   useEffect(()=>{
@@ -602,7 +601,7 @@ setTopScorerEmail(data.email)
     <div className="flex min-h-screen bg-gray-100">
 
       {/* SIDEBAR */}
-      <div className="w-64 bg-white shadow-md p-4">
+      <div className="hidden md:block w-64 bg-white shadow-md p-4">
 
         {/* <h2 className="text-xl font-bold mb-6">Dashboard</h2> */}
         <div className="flex items-center gap-3 mb-6">
@@ -646,12 +645,73 @@ setTopScorerEmail(data.email)
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-4 md:p-6">
 
         {/* NAVBAR */}
-        <div className="flex justify-between items-center bg-white shadow px-6 py-4 rounded-xl mb-6">
+        <div className="relative flex justify-between items-center bg-white shadow px-4 md:px-6 py-4 rounded-xl mb-6">
 
-          <h1 className="text-xl font-bold capitalize">Examination-Portal {activeTab}</h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-10 h-10 rounded border border-gray-300 flex items-center justify-center text-xl"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? "✕" : "☰"}
+            </button>
+
+            <h1 className="text-base md:text-xl font-bold capitalize">Examination-Portal {activeTab}</h1>
+          </div>
+
+          {mobileMenuOpen && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/20 z-30 md:hidden"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg p-3 z-40 md:hidden">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold">Menu</p>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center"
+                    aria-label="Close menu"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setActiveTab("dashboard")
+                    setMobileMenuOpen(false)
+                  }}
+                  className={`text-left px-4 py-2 rounded ${
+                    activeTab === "dashboard"
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-200"
+                  }`}
+                >
+                  🏠 Dashboard
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab("study")
+                    setMobileMenuOpen(false)
+                  }}
+                  className={`text-left px-4 py-2 rounded ${
+                    activeTab === "study"
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-200"
+                  }`}
+                >
+                  📚 Study Material
+                </button>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* AVATAR */}
           <div className="relative">
@@ -690,17 +750,17 @@ setTopScorerEmail(data.email)
         {/* DASHBOARD TAB */}
         {activeTab === "dashboard" && (
           
-          <div className="flex items-center justify-center h-[70vh]">
+          <div className="flex items-center justify-center min-h-[60vh] md:h-[70vh]">
             <button
   onClick={() => setShowTopModal(true)}
-  className="fixed top-24 right-6 bg-yellow-500 text-white px-4 py-2 rounded shadow-lg"
+  className="fixed top-20 md:top-24 right-4 md:right-6 bg-yellow-500 text-white px-3 md:px-4 py-2 rounded shadow-lg text-sm md:text-base"
 >
   🏆 Top Scorer
 </button>
 {showTopModal && resultPublished && (
   <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
 
-    <div className="bg-white p-6 rounded shadow w-[400px] relative text-center">
+    <div className="bg-white p-6 rounded shadow w-[92%] max-w-100 relative text-center">
 
       {/* CLOSE BUTTON */}
       <button
@@ -730,13 +790,11 @@ setTopScorerEmail(data.email)
     </div>
   </div>
 )}
-            <div className="bg-white p-10 rounded shadow w-[400px] text-center">
+            <div className="bg-white p-6 md:p-10 rounded shadow w-full max-w-100 text-center">
 
               <h2 className="text-2xl font-bold mb-4">
                 Online Examination
               </h2>
-             
-
 
               {!resultPublished && !hasSubmittedExam && (
                 <button
@@ -747,10 +805,19 @@ setTopScorerEmail(data.email)
                 </button>
               )}
 
-              {hasSubmittedExam && (
+              {hasSubmittedExam && !resultPublished && (
                 <p className="text-gray-600 text-sm">
                   You already submitted the exam. Wait for result.
                 </p>
+              )}
+
+              {resultPublished && (
+                <button
+                  onClick={() => router.push("/result")}
+                  className="bg-green-600 text-white px-6 py-2 rounded"
+                >
+                  Show Result
+                </button>
               )}
 
             </div>
@@ -767,7 +834,7 @@ setTopScorerEmail(data.email)
             {links.length === 0 ? (
               <p className="text-gray-500">No materials available</p>
             ) : (
-              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              <div className="space-y-3 max-h-100 overflow-y-auto">
                 {links.map((l)=>(
                   <div key={l._id} className="border p-3 rounded">
 

@@ -125,6 +125,7 @@ export default function AdminPanel(){
   const [tab,setTab] = useState("examination")
   const [user,setUser] = useState(null)
   const [open,setOpen] = useState(false)
+  const [mobileMenuOpen,setMobileMenuOpen] = useState(false)
 
   const router = useRouter()
   const menu = [
@@ -161,7 +162,7 @@ export default function AdminPanel(){
     <div className="flex min-h-screen bg-gray-100">
 
       {/* SIDEBAR */}
-      <div className="w-64 bg-white text-black p-6">
+      <div className="hidden md:block w-64 bg-white text-black p-6">
 
          <div className="flex items-center gap-3 mb-6">
           <Image
@@ -198,11 +199,61 @@ export default function AdminPanel(){
       <div className="flex-1 flex flex-col">
 
         {/* ✅ HEADER */}
-        <div className="flex justify-between items-center bg-white shadow px-10 py-4 w-270 mx-10 my-5  rounded-xl mb-6">
+        <div className="relative flex justify-between items-center bg-white shadow px-4 md:px-10 py-4 mx-4 md:mx-10 my-4 md:my-5 rounded-xl mb-6">
 
-          <h1 className="text-xl font-bold capitalize">
-            {tab}
-          </h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-10 h-10 rounded border border-gray-300 flex items-center justify-center text-xl"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? "✕" : "☰"}
+            </button>
+
+            <h1 className="text-xl font-bold capitalize">
+              {tab}
+            </h1>
+          </div>
+
+          {mobileMenuOpen && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/20 z-30 md:hidden"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <div className="absolute top-full left-4 right-4 mt-2 bg-white border rounded-lg shadow-lg p-3 z-40 md:hidden">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-semibold">Menu</p>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-8 h-8 rounded border border-gray-300 flex items-center justify-center"
+                    aria-label="Close menu"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <ul className="space-y-2">
+                  {menu.map((item) => (
+                    <li
+                      key={item.value}
+                      onClick={() => {
+                        setTab(item.value)
+                        setMobileMenuOpen(false)
+                      }}
+                      className={`cursor-pointer px-3 py-2 rounded transition ${
+                        tab === item.value
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-gray-200"
+                      }`}
+                    >
+                      {item.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
 
           {/* AVATAR */}
           <div className="relative">
@@ -237,7 +288,7 @@ export default function AdminPanel(){
 
 
         {/* CONTENT */}
-        <div className="p-8 flex-1">
+        <div className="p-4 md:p-8 flex-1">
 
           {tab === "examination" && <Examination />}
 

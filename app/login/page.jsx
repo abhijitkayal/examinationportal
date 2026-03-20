@@ -10,6 +10,7 @@ const router = useRouter()
 const [name,setName] = useState("")
 const [password,setPassword] = useState("")
 const [loading,setLoading] = useState(false)
+const [showPassword,setShowPassword] = useState(false)
 
 const login = async(e)=>{
 e.preventDefault()
@@ -85,13 +86,23 @@ onChange={(e)=>setName(e.target.value)}
 required
 />
 
+<div className="relative">
 <input
-type="password"
+type={showPassword ? "text" : "password"}
 placeholder="Enter password"
-className="w-full border p-3 rounded-lg"
+className="w-full border p-3 rounded-lg pr-20"
 onChange={(e)=>setPassword(e.target.value)}
 required
 />
+
+<button
+type="button"
+onClick={()=>setShowPassword(!showPassword)}
+className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-blue-600"
+>
+{showPassword ? "Hide" : "Show"}
+</button>
+</div>
 
 <button
 className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"

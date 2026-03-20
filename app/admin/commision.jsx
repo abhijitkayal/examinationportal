@@ -6,10 +6,6 @@ const Commission = () => {
 
 const [users,setUsers] = useState([])
 
-useEffect(()=>{
-fetchUsers()
-},[])
-
 const fetchUsers = async()=>{
 
 const res = await fetch("/api/users")
@@ -22,6 +18,21 @@ user => user.role === "staff" || user.role === "school"
 setUsers(filtered)
 
 }
+
+useEffect(()=>{
+const loadUsers = async()=>{
+const res = await fetch("/api/users")
+const data = await res.json()
+
+const filtered = data.filter(
+user => user.role === "staff" || user.role === "school"
+)
+
+setUsers(filtered)
+}
+
+loadUsers()
+},[])
 
 
 const updateCommission = async(userId,value)=>{
@@ -52,7 +63,9 @@ return (
 Staff & School Commission
 </h2>
 
-<table className="w-full border">
+<div className="overflow-x-auto touch-pan-x pb-2">
+
+<table className="w-full min-w-225 border whitespace-nowrap">
 
 <thead className="bg-gray-100">
 
@@ -100,6 +113,8 @@ onBlur={(e)=>updateCommission(user._id,e.target.value)}
 </tbody>
 
 </table>
+
+</div>
 
 </div>
 

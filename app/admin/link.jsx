@@ -12,16 +12,22 @@ title:"",
 url:""
 })
 
-// fetch links
-useEffect(()=>{
-fetchLinks()
-},[])
-
 const fetchLinks = async()=>{
 const res = await fetch("/api/link")
 const data = await res.json()
 setLinks(data)
 }
+
+// fetch links
+useEffect(()=>{
+const loadLinks = async ()=>{
+const res = await fetch("/api/link")
+const data = await res.json()
+setLinks(data)
+}
+
+loadLinks()
+},[])
 
 // handle input
 const handleChange = (e)=>{
@@ -91,7 +97,7 @@ className="text-blue-600 underline"
 
 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
 
-<div className="bg-white p-6 rounded w-[400px]">
+<div className="bg-white p-6 rounded w-[92%] max-w-100">
 
 <h2 className="text-xl font-bold mb-4">
 Upload Link

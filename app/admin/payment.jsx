@@ -38,16 +38,22 @@ export default function Dashboard() {
 
   },[router])
 
-  // ---------------- FETCH PAYMENTS ----------------
-  useEffect(()=>{
-    fetchPayments()
-  },[])
-
   async function fetchPayments(){
     const res = await fetch("/api/payment")
     const data = await res.json()
     setPayments(data)
   }
+
+  // ---------------- FETCH PAYMENTS ----------------
+  useEffect(()=>{
+    const loadPayments = async () => {
+      const res = await fetch("/api/payment")
+      const data = await res.json()
+      setPayments(data)
+    }
+
+    loadPayments()
+  },[])
 
   // ---------------- ADD PAYMENT ----------------
   async function handlePaymentSubmit(e){
@@ -68,12 +74,6 @@ export default function Dashboard() {
 
     setShowPaymentModal(false)
     fetchPayments()
-  }
-
-  // ---------------- LOGOUT ----------------
-  const logout = ()=>{
-    localStorage.removeItem("userId")
-    router.push("/login")
   }
 
   return(
@@ -101,8 +101,8 @@ export default function Dashboard() {
         <div className="bg-white p-6 rounded shadow">
           <h2 className="text-xl font-bold mb-4">Payment History</h2>
 
-          <div className="overflow-x-auto">
-            <table className="w-full border">
+          <div className="overflow-x-auto touch-pan-x pb-2">
+            <table className="w-full min-w-175 border whitespace-nowrap">
 
               <thead className="bg-gray-200">
                 <tr>
@@ -140,7 +140,7 @@ export default function Dashboard() {
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
 
-          <div className="bg-white p-6 rounded shadow w-[400px] relative">
+          <div className="bg-white p-6 rounded shadow w-[92%] max-w-100 relative">
 
             <button
               onClick={()=>setShowPaymentModal(false)}
