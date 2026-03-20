@@ -1,0 +1,112 @@
+"use client"
+
+import React, { useEffect, useState } from "react"
+
+const Commission = () => {
+
+const [users,setUsers] = useState([])
+
+useEffect(()=>{
+fetchUsers()
+},[])
+
+const fetchUsers = async()=>{
+
+const res = await fetch("/api/users")
+const data = await res.json()
+
+const filtered = data.filter(
+user => user.role === "staff" || user.role === "school"
+)
+
+setUsers(filtered)
+
+}
+
+
+const updateCommission = async(userId,value)=>{
+
+await fetch("/api/users/commision",{
+method:"PATCH",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+userId,
+commission:Number(value)
+})
+})
+
+fetchUsers()
+
+}
+
+
+return (
+
+<div className="p-6">
+
+<div className="bg-white p-6 rounded shadow">
+
+<h2 className="text-xl font-semibold mb-6">
+Staff & School Commission
+</h2>
+
+<table className="w-full border">
+
+<thead className="bg-gray-100">
+
+<tr>
+<th className="border p-2">Name</th>
+<th className="border p-2">Email</th>
+<th className="border p-2">Role</th>
+<th className="border p-2">Referral Code</th>
+<th className="border p-2">Referral Count</th>
+<th className="border p-2">Commission Per Referral</th>
+<th className="border p-2">Total Commission</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{users.map((user)=>(
+<tr key={user._id} className="text-center">
+
+<td className="border p-2">{user.name}</td>
+<td className="border p-2">{user.email}</td>
+<td className="border p-2">{user.role}</td>
+<td className="border p-2">{user.referralCode}</td>
+<td className="border p-2">{user.referralCount || 0}</td>
+
+<td className="border p-2">
+
+<input
+type="number"
+defaultValue={user.commissionPerReferral || 0}
+className="border p-1 w-24"
+onBlur={(e)=>updateCommission(user._id,e.target.value)}
+/>
+
+</td>
+
+<td className="border p-2">
+₹ {user.totalCommission || 0}
+</td>
+
+</tr>
+))}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+)
+
+}
+
+export default Commission
