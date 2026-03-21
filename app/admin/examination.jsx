@@ -7,6 +7,8 @@ const Examination = () => {
 const [type,setType] = useState("mcq")
 const [open,setOpen] = useState(false)
 const [questions,setQuestions] = useState([])
+const [scheduleInput,setScheduleInput] = useState("")
+const [savedSchedule,setSavedSchedule] = useState(null)
 
 const [form,setForm] = useState({
 question:"",
@@ -28,6 +30,88 @@ fetch("/api/question")
 .then(data=>setQuestions(data))
 
 },[])
+
+useEffect(()=>{
+
+fetch("/api/exam-schedule")
+.then(res=>res.json())
+.then(data=>{
+if(data?.scheduleAt){
+const date = new Date(data.scheduleAt)
+setSavedSchedule(date.toISOString())
+setScheduleInput(date.toISOString().slice(0,16))
+}
+})
+
+},[])
+
+const saveSchedule = async ()=>{
+
+if(!scheduleInput){
+alert("Please select schedule time")
+return
+}
+
+const res = await fetch("/api/exam-schedule",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({ scheduleAt: new Date(scheduleInput).toISOString() })
+})
+
+const data = await res.json()
+
+if(!res.ok){
+alert(data.message || "Could not save schedule")
+return
+}
+
+setSavedSchedule(data.scheduleAt)
+setScheduleInput(new Date(data.scheduleAt).toISOString().slice(0,16))
+alert("Schedule saved")
+
+}
+
+const resetSchedule = async ()=>{
+
+const res = await fetch("/api/exam-schedule",{
+method:"DELETE"
+})
+
+const data = await res.json()
+
+if(!res.ok){
+alert(data.message || "Could not reset schedule")
+return
+}
+
+setSavedSchedule(null)
+setScheduleInput("")
+alert("Schedule reset")
+
+}
+
+const deleteQuestion = async (id)=>{
+
+const confirmed = window.confirm("Delete this question?")
+
+if(!confirmed) return
+
+const res = await fetch(`/api/question?id=${id}`,{
+method:"DELETE"
+})
+
+const data = await res.json()
+
+if(!res.ok){
+alert(data.message || "Could not delete question")
+return
+}
+
+setQuestions(prev=>prev.filter((q)=>q._id !== id))
+
+}
 
 
 
@@ -82,6 +166,50 @@ return (
 
 <div className="p-6 -mt-10">
 
+<div className="bg-white border rounded p-4 mb-6">
+
+<h3 className="font-semibold mb-3">
+Exam Schedule
+</h3>
+
+<div className="flex flex-col md:flex-row md:items-end gap-3">
+
+<div className="flex-1">
+<label className="block text-sm text-gray-600 mb-1">Schedule Date & Time</label>
+<input
+type="datetime-local"
+value={scheduleInput}
+onChange={(e)=>setScheduleInput(e.target.value)}
+className="w-full border p-2 rounded"
+/>
+</div>
+
+<button
+type="button"
+onClick={saveSchedule}
+className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+>
+Save Schedule
+</button>
+
+<button
+type="button"
+onClick={resetSchedule}
+className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+>
+Reset Schedule
+</button>
+
+</div>
+
+{savedSchedule && (
+<p className="text-sm text-gray-600 mt-2">
+Saved schedule: {new Date(savedSchedule).toLocaleString()}
+</p>
+)}
+
+</div>
+
 <div className="flex justify-end mb-4">
 
 <button
@@ -121,6 +249,14 @@ Time: {q.time}
 <p className="text-sm text-gray-600">
 Marks: {q.marks}
 </p>
+
+<button
+type="button"
+onClick={()=>deleteQuestion(q._id)}
+className="mt-3 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+>
+Delete Question
+</button>
 
 </div>
 

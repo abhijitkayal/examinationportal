@@ -63,20 +63,24 @@ return (
 Staff & School Commission
 </h2>
 
-<div className="overflow-x-auto touch-pan-x pb-2">
+<div className="overflow-hidden">
+<div
+className="overflow-x-auto touch-pan-x pb-2 border border-gray-300 rounded max-w-100 md:max-w-full"
+style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#888 #f1f1f1" }}
+>
 
-<table className="w-full min-w-225 border whitespace-nowrap">
+<table className="w-max min-w-full border whitespace-nowrap">
 
 <thead className="bg-gray-100">
 
 <tr>
-<th className="border p-2">Name</th>
-<th className="border p-2">Email</th>
-<th className="border p-2">Role</th>
-<th className="border p-2">Referral Code</th>
-<th className="border p-2">Referral Count</th>
-<th className="border p-2">Commission Per Referral</th>
-<th className="border p-2">Total Commission</th>
+<th className="border p-2 min-w-30">Name</th>
+<th className="border p-2 min-w-45">Email</th>
+<th className="border p-2 min-w-25">Role</th>
+<th className="border p-2 min-w-32.5">Referral Code</th>
+<th className="border p-2 min-w-32.5">Referral Count</th>
+<th className="border p-2 min-w-42.5">Commission Per Referral</th>
+<th className="border p-2 min-w-32.5">Total Commission</th>
 </tr>
 
 </thead>
@@ -86,13 +90,13 @@ Staff & School Commission
 {users.map((user)=>(
 <tr key={user._id} className="text-center">
 
-<td className="border p-2">{user.name}</td>
-<td className="border p-2">{user.email}</td>
-<td className="border p-2">{user.role}</td>
-<td className="border p-2">{user.referralCode}</td>
-<td className="border p-2">{user.referralCount || 0}</td>
+<td className="border p-2 min-w-30">{user.name}</td>
+<td className="border p-2 min-w-45">{user.email}</td>
+<td className="border p-2 min-w-25">{user.role}</td>
+<td className="border p-2 min-w-32.5">{user.referralCode}</td>
+<td className="border p-2 min-w-32.5">{user.referralCount || 0}</td>
 
-<td className="border p-2">
+<td className="border p-2 min-w-42.5">
 
 <input
 type="number"
@@ -103,7 +107,7 @@ onBlur={(e)=>updateCommission(user._id,e.target.value)}
 
 </td>
 
-<td className="border p-2">
+<td className="border p-2 min-w-32.5">
 ₹ {user.totalCommission || 0}
 </td>
 
@@ -114,6 +118,7 @@ onBlur={(e)=>updateCommission(user._id,e.target.value)}
 
 </table>
 
+</div>
 </div>
 
 </div>

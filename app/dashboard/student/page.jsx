@@ -23,10 +23,16 @@ const [showResult,setShowResult] = useState(false)
 const [startExam,setStartExam] = useState(false)
 const [resultPublished,setResultPublished] = useState(false)
 const [hasSubmittedExam,setHasSubmittedExam] = useState(false)
+const [scheduledAt,setScheduledAt] = useState(null)
+const [timeLeft,setTimeLeft] = useState(0)
 
 useEffect(()=>{
 
 if(searchParams.get("exam") === "1" && !hasSubmittedExam){
+if(timeLeft > 0){
+return
+}
+
 const starter = setTimeout(()=>{
 setStartExam(true)
 },0)
@@ -34,7 +40,42 @@ setStartExam(true)
 return ()=> clearTimeout(starter)
 }
 
-},[searchParams,hasSubmittedExam])
+},[searchParams,hasSubmittedExam,timeLeft])
+
+useEffect(()=>{
+
+fetch("/api/exam-schedule")
+.then(res=>res.json())
+.then(data=>{
+if(data?.scheduleAt){
+setScheduledAt(data.scheduleAt)
+}
+})
+
+},[])
+
+useEffect(()=>{
+if(!scheduledAt){
+return
+}
+
+const updateCountdown = ()=>{
+const diff = new Date(scheduledAt).getTime() - Date.now()
+setTimeLeft(Math.max(0,Math.floor(diff / 1000)))
+}
+
+updateCountdown()
+const timer = setInterval(updateCountdown,1000)
+
+return ()=> clearInterval(timer)
+},[scheduledAt])
+
+const formatCountdown = (seconds)=>{
+const h = String(Math.floor(seconds / 3600)).padStart(2,"0")
+const m = String(Math.floor((seconds % 3600) / 60)).padStart(2,"0")
+const s = String(seconds % 60).padStart(2,"0")
+return `${h}:${m}:${s}`
+}
 
 
 
@@ -339,13 +380,24 @@ Online Examination
 Click the button below to start the exam.
 </p>
 
+{!resultPublished && !hasSubmittedExam && timeLeft > 0 && (
+<>
+<p className="text-sm text-gray-600 mb-2">
+Exam starts in
+</p>
+<p className="text-2xl font-bold text-blue-700 mb-4">
+{formatCountdown(timeLeft)}
+</p>
+</>
+)}
+
 {hasSubmittedExam && (
 <p className="text-sm text-orange-600 mb-4">
 You have already submitted the exam. You can attempt only once.
 </p>
 )}
 
-{!resultPublished && !hasSubmittedExam &&<button
+{!resultPublished && !hasSubmittedExam && timeLeft === 0 &&<button
 onClick={()=>setStartExam(true)}
 className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
 >

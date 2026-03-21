@@ -25,3 +25,24 @@ question
 })
 
 }
+
+export async function DELETE(req){
+
+await connectDB()
+
+const { searchParams } = new URL(req.url)
+const id = searchParams.get("id")
+
+if(!id){
+return Response.json({ message:"Question id is required" },{ status:400 })
+}
+
+const deleted = await Question.findByIdAndDelete(id)
+
+if(!deleted){
+return Response.json({ message:"Question not found" },{ status:404 })
+}
+
+return Response.json({ message:"Question deleted successfully" })
+
+}

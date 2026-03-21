@@ -89,7 +89,7 @@ export default function Dashboard() {
 
  <button
         onClick={()=>setShowPaymentModal(true)}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="bg-blue-600 text-white px-4 mr-5 py-2 rounded hover:bg-blue-700"
       >
         + Add Payment
       </button>
@@ -101,25 +101,29 @@ export default function Dashboard() {
         <div className="bg-white p-6 rounded shadow">
           <h2 className="text-xl font-bold mb-4">Payment History</h2>
 
-          <div className="overflow-x-auto touch-pan-x pb-2">
-            <table className="w-full min-w-175 border whitespace-nowrap">
+          <div className="overflow-hidden">
+          <div
+            className="overflow-x-auto touch-pan-x pb-2 border border-gray-300 rounded max-w-100 md:max-w-full"
+            style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "thin", scrollbarColor: "#888 #f1f1f1" }}
+          >
+            <table className="w-max min-w-full border whitespace-nowrap">
 
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="border p-2">Name</th>
-                  <th className="border p-2">Email</th>
-                  <th className="border p-2">Amount</th>
-                  <th className="border p-2">Type</th>
+                  <th className="border p-2 min-w-30">Name</th>
+                  <th className="border p-2 min-w-45">Email</th>
+                  <th className="border p-2 min-w-30">Amount</th>
+                  <th className="border p-2 min-w-25">Type</th>
                 </tr>
               </thead>
 
               <tbody>
                 {payments.map((p)=>(
                   <tr key={p._id} className="text-center">
-                    <td className="border p-2">{p.name}</td>
-                    <td className="border p-2">{p.email}</td>
-                    <td className="border p-2">₹{p.amount}</td>
-                    <td className={`border p-2 font-semibold ${
+                    <td className="border p-2 min-w-30">{p.name}</td>
+                    <td className="border p-2 min-w-45">{p.email}</td>
+                    <td className="border p-2 min-w-30">₹{p.amount}</td>
+                    <td className={`border p-2 min-w-25 font-semibold ${
                       p.type === "inward"
                         ? "text-green-600"
                         : "text-red-600"
@@ -131,6 +135,7 @@ export default function Dashboard() {
               </tbody>
 
             </table>
+          </div>
           </div>
         </div>
 

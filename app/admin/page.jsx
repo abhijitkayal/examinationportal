@@ -119,6 +119,7 @@ import Entry from "./entry"
 import Payment from "./payment"
 import Examination from "./examination"
 import LinkPage from "./link"
+import Topper from "./topper"
 
 export default function AdminPanel(){
 
@@ -134,6 +135,7 @@ export default function AdminPanel(){
   { name: "Entry", value: "entry" },
   { name: "Commission Calculation", value: "commission" },
   { name: "Link Management", value: "link" },
+  { name: "Topper list", value: "topper" },
 ]
 
   // ✅ FETCH USER
@@ -168,12 +170,12 @@ export default function AdminPanel(){
           <Image
             src={logo}
             alt="Examination Portal Logo"
-            width={60}
-            height={60}
-            className=" object-cover rounded-xl"
+            // width={200}
+            // height={10}
+            className=" object-cover rounded-xl w-100 h-25 -mt-5"
             priority
           />
-          <h2 className="text-lg font-bold">Examination Portal</h2>
+          {/* <h2 className="text-lg font-bold">Examination Portal</h2> */}
         </div>
 
         <ul className="space-y-3">
@@ -299,6 +301,7 @@ export default function AdminPanel(){
           {tab === "commission" && <Commision />}
 
           {tab === "link" && <LinkPage />}
+          {tab === "topper" && <Topper />}
 
         </div>
 
