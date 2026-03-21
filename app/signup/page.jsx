@@ -74,7 +74,7 @@ Create Account
             alt="Examination Portal Logo"
             // width={140}
             // height={60}
-            className=" object-cover rounded-xl w-30 h-15 ml-33 -mt-5 mb-5"
+            className=" object-cover rounded-xl w-30 h-15 ml-33 -mt-5 mb-6"
             priority
           />
 
