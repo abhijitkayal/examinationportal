@@ -1,7 +1,9 @@
 "use client"
 
+import Image from "next/image";
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import logo from "../dashboard/WhatsApp Image 2026-03-18 at 9.04.15 PM.jpeg"
 
 export default function Signup() {
 const router = useRouter();
@@ -67,6 +69,14 @@ return (
 <h2 className="text-2xl font-bold text-center mb-6">
 Create Account
 </h2>
+<Image
+            src={logo}
+            alt="Examination Portal Logo"
+            // width={140}
+            // height={60}
+            className=" object-cover rounded-xl w-30 h-15 ml-33 -mt-5 mb-5"
+            priority
+          />
 
 <form onSubmit={handleSubmit} className="space-y-4">
 

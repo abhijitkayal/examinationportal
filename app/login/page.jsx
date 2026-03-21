@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+import logo from "../dashboard/WhatsApp Image 2026-03-18 at 9.04.15 PM.jpeg"
 
 export default function Login(){
 
@@ -77,6 +79,14 @@ Login
 </h2>
 
 <form onSubmit={login} className="space-y-4">
+ <Image
+            src={logo}
+            alt="Examination Portal Logo"
+            // width={140}
+            // height={60}
+            className=" object-cover rounded-xl w-30 h-15 ml-33"
+            priority
+          />
 
 <input
 type="text"
