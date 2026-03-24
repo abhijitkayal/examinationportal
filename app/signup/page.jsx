@@ -5,13 +5,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import logo from "../dashboard/WhatsApp Image 2026-03-18 at 9.04.15 PM.jpeg"
 
-export default function Signup() {
-const router = useRouter();
-const [role,setRole] = useState("student")
-const [showPassword,setShowPassword] = useState(false)
-const [showConfirmPassword,setShowConfirmPassword] = useState(false)
-
-const [form,setForm] = useState({
+const initialForm = {
 name:"",
 email:"",
 phone:"",
@@ -20,7 +14,15 @@ aadhaar:"",
 referralCode:"",
 password:"",
 confirm:""
-})
+}
+
+export default function Signup() {
+const router = useRouter();
+const [role,setRole] = useState("student")
+const [showPassword,setShowPassword] = useState(false)
+const [showConfirmPassword,setShowConfirmPassword] = useState(false)
+
+const [form,setForm] = useState(initialForm)
 
 const handleChange = (e)=>{
 setForm({...form,[e.target.name]:e.target.value})
@@ -54,10 +56,16 @@ return
 
 if(generatedCode){
 alert(`${data.message}\nYour unique code: ${generatedCode}`)
-router.push("/login")
+
 }else{
 alert(data.message)
 }
+
+setForm(initialForm)
+setRole("student")
+setShowPassword(false)
+setShowConfirmPassword(false)
+router.push("/login")
 }
 
 return (
@@ -89,6 +97,7 @@ onChange={(e)=>setRole(e.target.value)}
 <option value="school">School</option>
 <option value="staff">Staff</option>
 <option value="student">Student</option>
+{/* <option value="admin">Admin</option> */}
 
 </select>
 
@@ -96,6 +105,7 @@ onChange={(e)=>setRole(e.target.value)}
 name="name"
 placeholder="Full Name"
 className="w-full border p-2 rounded"
+value={form.name}
 onChange={handleChange}
 />
 
@@ -103,6 +113,7 @@ onChange={handleChange}
 name="email"
 placeholder="Email"
 className="w-full border p-2 rounded"
+value={form.email}
 onChange={handleChange}
 />
 
@@ -110,6 +121,7 @@ onChange={handleChange}
 name="phone"
 placeholder="Phone"
 className="w-full border p-2 rounded"
+value={form.phone}
 onChange={handleChange}
 />
 
@@ -124,6 +136,7 @@ Unique code will be generated automatically after signup.
 name="address"
 placeholder="Address"
 className="w-full border p-2 rounded"
+value={form.address}
 onChange={handleChange}
 />
 
@@ -139,12 +152,14 @@ onChange={handleChange}
 name="aadhaar"
 placeholder="Aadhaar Number"
 className="w-full border p-2 rounded"
+value={form.aadhaar}
 onChange={handleChange}
 />
 <input
 name="referralCode"
 placeholder="Referral Code (optional)"
 className="w-full border p-2 rounded"
+value={form.referralCode}
 onChange={handleChange}
 />
 </>
@@ -157,6 +172,7 @@ type={showPassword ? "text" : "password"}
 name="password"
 placeholder="Password"
 className="w-full border p-2 rounded pr-16"
+value={form.password}
 onChange={handleChange}
 />
 
@@ -175,6 +191,7 @@ type={showConfirmPassword ? "text" : "password"}
 name="confirm"
 placeholder="Confirm Password"
 className="w-full border p-2 rounded pr-16"
+value={form.confirm}
 onChange={handleChange}
 />
 

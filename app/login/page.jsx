@@ -18,10 +18,10 @@ const login = async(e)=>{
 e.preventDefault()
 
 setLoading(true)
-if(name=="admin@gmail.com" && password=="admin123"){
-    router.push("/admin");
-    return;
-}
+// if(name=="admin@gmail.com" && password=="admin123"){
+//     router.push("/admin");
+//     return;
+// }
 
 try{
 
@@ -59,6 +59,10 @@ router.push(`/staff/${data.userId}`)
 else if(data.role === "student"){
 router.push(`/student/${data.userId}`)
 }
+else if(data.role === "admin"){
+router.push("/admin")
+}
+
 
 }catch{
 alert("Something went wrong")
